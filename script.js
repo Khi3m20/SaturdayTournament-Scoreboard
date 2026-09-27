@@ -3582,3 +3582,471 @@ window.SOT = {
   }
 
 };
+/* =========================================================
+   SOT RESULT IMAGE — COMPACT TOP 10 — 4K
+   ========================================================= */
+
+generateResultImage = function () {
+
+  if (!isAdmin) return;
+
+  if (!players.length) {
+
+    alert(
+      "Add players before generating the result."
+    );
+
+    return;
+
+  }
+
+  /* TOP 10 ONLY */
+  recalculateScores();
+
+  const top10 =
+    [...players]
+      .sort((a, b) => {
+
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        }
+
+        return a.name.localeCompare(b.name);
+
+      })
+      .slice(0, 10);
+
+  /* =====================================================
+     4K CANVAS
+     Base design = 1080 × ~1115
+     Scale = 4
+     ===================================================== */
+
+  const scale = 4;
+
+  const baseWidth = 1080;
+
+  const headerHeight = 190;
+  const tableHeaderHeight = 62;
+  const rowHeight = 76;
+  const footerHeight = 105;
+
+  const baseHeight =
+    headerHeight +
+    tableHeaderHeight +
+    top10.length * rowHeight +
+    footerHeight;
+
+  const canvas =
+    document.createElement("canvas");
+
+  canvas.width =
+    baseWidth * scale;
+
+  canvas.height =
+    baseHeight * scale;
+
+  const ctx =
+    canvas.getContext("2d");
+
+  /* Scale everything together */
+  ctx.scale(scale, scale);
+
+  const width = baseWidth;
+
+  /* =====================================================
+     BACKGROUND
+     ===================================================== */
+
+  ctx.fillStyle = "#07090d";
+
+  ctx.fillRect(
+    0,
+    0,
+    width,
+    baseHeight
+  );
+
+  ctx.fillStyle = "#e3263f";
+
+  ctx.fillRect(
+    0,
+    0,
+    width,
+    12
+  );
+
+  ctx.fillStyle = "#ff8a24";
+
+  ctx.fillRect(
+    0,
+    baseHeight - 10,
+    width,
+    10
+  );
+
+  /* =====================================================
+     HEADER — SATURDAY OPEN TOURNAMENT
+     ===================================================== */
+
+  ctx.textAlign = "left";
+
+  ctx.fillStyle = "#f5f7fa";
+
+  ctx.font = "900 42px Arial";
+
+  ctx.fillText(
+    "SATURDAY",
+    42,
+    55
+  );
+
+  ctx.fillStyle = "#ff8a24";
+
+  ctx.font = "900 34px Arial";
+
+  ctx.fillText(
+    "OPEN TOURNAMENT",
+    42,
+    92
+  );
+
+  ctx.fillStyle = "#9aa4b2";
+
+  ctx.font = "700 21px Arial";
+
+  ctx.fillText(
+    `TOURNAMENT ${tournament.number}`,
+    42,
+    125
+  );
+
+  ctx.fillText(
+    `MATCH ${currentMatch}`,
+    42,
+    153
+  );
+
+  /* =====================================================
+     HEADER — TOP 10
+     ===================================================== */
+
+  ctx.textAlign = "right";
+
+  ctx.fillStyle = "#f5f7fa";
+
+  ctx.font = "900 34px Arial";
+
+  ctx.fillText(
+    "TOP 10",
+    width - 42,
+    62
+  );
+
+  ctx.fillStyle = "#ff8a24";
+
+  ctx.font = "900 24px Arial";
+
+  ctx.fillText(
+    "LEADERBOARD",
+    width - 42,
+    95
+  );
+
+  /* =====================================================
+     TABLE
+     ===================================================== */
+
+  const tableX = 28;
+
+  const tableWidth =
+    width - 56;
+
+  const tableY =
+    headerHeight;
+
+  const columns = {
+
+    rank: 58,
+
+    player: 230,
+
+    win: 360,
+
+    mvp: 455,
+
+    quadra: 555,
+
+    penta: 650,
+
+    additional: 795,
+
+    score: 1005
+
+  };
+
+  /* =====================================================
+     TABLE HEADER
+     ===================================================== */
+
+  ctx.fillStyle = "#151b24";
+
+  ctx.fillRect(
+    tableX,
+    tableY,
+    tableWidth,
+    tableHeaderHeight
+  );
+
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = "#f5f7fa";
+
+  ctx.font = "900 18px Arial";
+
+  ctx.fillText(
+    "#",
+    columns.rank,
+    tableY + 38
+  );
+
+  ctx.fillText(
+    "PLAYER",
+    columns.player,
+    tableY + 38
+  );
+
+  ctx.fillText(
+    "WIN",
+    columns.win,
+    tableY + 38
+  );
+
+  ctx.fillText(
+    "MVP",
+    columns.mvp,
+    tableY + 38
+  );
+
+  ctx.fillText(
+    "QD",
+    columns.quadra,
+    tableY + 38
+  );
+
+  ctx.fillText(
+    "PT",
+    columns.penta,
+    tableY + 38
+  );
+
+  ctx.fillText(
+    "ADDITIONAL",
+    columns.additional,
+    tableY + 27
+  );
+
+  ctx.fillText(
+    "POINT",
+    columns.additional,
+    tableY + 48
+  );
+
+  ctx.fillStyle = "#ff8a24";
+
+  ctx.fillText(
+    "SCORE",
+    columns.score,
+    tableY + 38
+  );
+
+  /* =====================================================
+     TOP 10 ROWS
+     ===================================================== */
+
+  top10.forEach((player, index) => {
+
+    const y =
+      tableY +
+      tableHeaderHeight +
+      index * rowHeight;
+
+    ctx.fillStyle =
+      index % 2 === 0
+        ? "#11161e"
+        : "#0d1118";
+
+    ctx.fillRect(
+      tableX,
+      y,
+      tableWidth,
+      rowHeight
+    );
+
+    ctx.fillStyle = "#252c36";
+
+    ctx.fillRect(
+      tableX,
+      y + rowHeight - 1,
+      tableWidth,
+      1
+    );
+
+    const achievements =
+      player.achievements || {};
+
+    /* RANK */
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+      index < 3
+        ? "900 27px Arial"
+        : "900 24px Arial";
+
+    ctx.fillStyle =
+      index < 3
+        ? "#ffb04a"
+        : "#f5f7fa";
+
+    ctx.fillText(
+      `#${index + 1}`,
+      columns.rank,
+      y + 48
+    );
+
+    /* PLAYER */
+
+    ctx.textAlign = "left";
+
+    ctx.fillStyle = "#f5f7fa";
+
+    ctx.font =
+      "900 22px Arial";
+
+    let playerName =
+      String(player.name || "");
+
+    if (playerName.length > 18) {
+
+      playerName =
+        playerName.substring(0, 17) + "…";
+
+    }
+
+    ctx.fillText(
+      playerName,
+      150,
+      y + 48
+    );
+
+    /* ACHIEVEMENTS */
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+      "900 23px Arial";
+
+    ctx.fillStyle = "#dfe4eb";
+
+    ctx.fillText(
+      achievements.win || 0,
+      columns.win,
+      y + 48
+    );
+
+    ctx.fillText(
+      achievements.mvp || 0,
+      columns.mvp,
+      y + 48
+    );
+
+    ctx.fillText(
+      achievements.quadra || 0,
+      columns.quadra,
+      y + 48
+    );
+
+    ctx.fillText(
+      achievements.penta || 0,
+      columns.penta,
+      y + 48
+    );
+
+    ctx.fillText(
+      achievements.additionalPoint || 0,
+      columns.additional,
+      y + 48
+    );
+
+    /* SCORE */
+
+    ctx.fillStyle = "#ff8a24";
+
+    ctx.font =
+      "900 27px Arial";
+
+    ctx.fillText(
+      player.score || 0,
+      columns.score,
+      y + 48
+    );
+
+  });
+
+  /* =====================================================
+     FOOTER
+     ===================================================== */
+
+  const footerY =
+    tableY +
+    tableHeaderHeight +
+    top10.length * rowHeight;
+
+  ctx.fillStyle = "#0b1018";
+
+  ctx.fillRect(
+    tableX,
+    footerY,
+    tableWidth,
+    footerHeight
+  );
+
+  ctx.textAlign = "right";
+
+  ctx.fillStyle = "#f5f7fa";
+
+  ctx.font =
+    "800 22px Arial";
+
+  ctx.fillText(
+    "Host by Jiy&Kitty",
+    width - 42,
+    footerY + 43
+  );
+
+  ctx.fillStyle = "#ff8a24";
+
+  ctx.font =
+    "800 22px Arial";
+
+  ctx.fillText(
+    "Co Host YEGK No Name",
+    width - 42,
+    footerY + 75
+  );
+
+  /* =====================================================
+     PREVIEW
+     ===================================================== */
+
+  const imageData =
+    canvas.toDataURL("image/png");
+
+  $("resultImage").src =
+    imageData;
+
+  $("resultPreview").style.display =
+    "block";
+
+};
