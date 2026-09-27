@@ -4017,24 +4017,24 @@ generateResultImage = function () {
   ctx.fillStyle = "#f5f7fa";
 
   ctx.font =
-    "800 22px Arial";
+  "900 28px Arial";
 
-  ctx.fillText(
-    "Host by Jiy&Kitty",
-    width - 42,
-    footerY + 43
-  );
+ctx.fillText(
+  "Host by Jiy&Kitty",
+  width - 42,
+  footerY + 43
+);
 
-  ctx.fillStyle = "#ff8a24";
+ctx.fillStyle = "#ff8a24";
 
-  ctx.font =
-    "800 22px Arial";
+ctx.font =
+  "800 20px Arial";
 
-  ctx.fillText(
-    "Co Host YEGK No Name",
-    width - 42,
-    footerY + 75
-  );
+ctx.fillText(
+  "Co Host YEGK No Name",
+  width - 42,
+  footerY + 75
+);
 
   /* =====================================================
      PREVIEW
