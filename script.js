@@ -18,9 +18,7 @@ const DEFAULT_SCORING = {
   mvp: 5,
   quadra: 8,
   penta: 12,
-  ppcc: 5,
-  tank: 1,
-  dps: 1
+  additionalPoint: 1
 };
 
 
@@ -294,14 +292,8 @@ const Database = {
           penta:
             Number(row.penta) || 0,
 
-          ppcc:
-            Number(row.ppcc) || 0,
-
-          tank:
-            Number(row.tank) || 0,
-
-          dps:
-            Number(row.dps) || 0
+          additionalPoint:
+            Number(row.additional_point) || 0
 
         },
 
@@ -335,10 +327,6 @@ const Database = {
     }
 
 
-    /*
-      Get existing player IDs.
-    */
-
     const {
       data: existingRows,
       error: existingError
@@ -367,11 +355,6 @@ const Database = {
         )
       );
 
-
-    /*
-      Delete players that no longer exist
-      in the current frontend state.
-    */
 
     const idsToDelete =
       (existingRows || [])
@@ -414,21 +397,12 @@ const Database = {
     }
 
 
-    /*
-      Nothing to insert/update.
-    */
-
     if (!data.length) {
 
       return true;
 
     }
 
-
-    /*
-      Convert frontend player objects
-      into Supabase table rows.
-    */
 
     const rows =
       data.map(
@@ -464,19 +438,9 @@ const Database = {
               player.achievements?.penta
             ) || 0,
 
-          ppcc:
+          additional_point:
             Number(
-              player.achievements?.ppcc
-            ) || 0,
-
-          tank:
-            Number(
-              player.achievements?.tank
-            ) || 0,
-
-          dps:
-            Number(
-              player.achievements?.dps
+              player.achievements?.additionalPoint
             ) || 0,
 
           score:
@@ -493,10 +457,6 @@ const Database = {
       rows
     );
 
-
-    /*
-      Upsert players.
-    */
 
     const {
       data: savedRows,
@@ -593,14 +553,8 @@ const Database = {
       penta:
         Number(data.penta) || 0,
 
-      ppcc:
-        Number(data.ppcc) || 0,
-
-      tank:
-        Number(data.tank) || 0,
-
-      dps:
-        Number(data.dps) || 0
+      additionalPoint:
+        Number(data.additional_point) || 0
 
     };
 
@@ -630,14 +584,8 @@ const Database = {
           penta:
             Number(data.penta) || 0,
 
-          ppcc:
-            Number(data.ppcc) || 0,
-
-          tank:
-            Number(data.tank) || 0,
-
-          dps:
-            Number(data.dps) || 0
+          additional_point:
+            Number(data.additionalPoint) || 0
 
         });
 
@@ -1345,11 +1293,7 @@ function createPlayer(name) {
 
       penta: 0,
 
-      ppcc: 0,
-
-      tank: 0,
-
-      dps: 0
+      additionalPoint: 0
 
     },
 
@@ -1415,10 +1359,6 @@ async function addPlayer(event) {
   const player =
     createPlayer(name);
 
-
-  /*
-    Keep old state for rollback.
-  */
 
   const oldPlayers =
     [...players];
@@ -1645,14 +1585,8 @@ function calculateScore(player) {
     a.penta *
       scoring.penta +
 
-    a.ppcc *
-      scoring.ppcc +
-
-    a.tank *
-      scoring.tank +
-
-    a.dps *
-      scoring.dps
+    a.additionalPoint *
+      scoring.additionalPoint
 
   );
 
@@ -1774,16 +1708,8 @@ function loadScoringInputs() {
     scoring.penta;
 
 
-  $("ppccPoints").value =
-    scoring.ppcc;
-
-
-  $("tankPoints").value =
-    scoring.tank;
-
-
-  $("dpsPoints").value =
-    scoring.dps;
+  $("additionalPointPoints").value =
+    scoring.additionalPoint;
 
 }
 
@@ -1846,19 +1772,9 @@ async function applyScoring() {
         "pentaPoints"
       ),
 
-    ppcc:
+    additionalPoint:
       getNumber(
-        "ppccPoints"
-      ),
-
-    tank:
-      getNumber(
-        "tankPoints"
-      ),
-
-    dps:
-      getNumber(
-        "dpsPoints"
+        "additionalPointPoints"
       )
 
   };
@@ -2474,19 +2390,7 @@ function renderLeaderboard() {
 
               ${achievementCell(
                 player,
-                "ppcc"
-              )}
-
-
-              ${achievementCell(
-                player,
-                "tank"
-              )}
-
-
-              ${achievementCell(
-                player,
-                "dps"
+                "additionalPoint"
               )}
 
 
@@ -2947,11 +2851,7 @@ function generateResultImage() {
 
     penta: 1000,
 
-    ppcc: 1135,
-
-    tank: 1290,
-
-    dps: 1430,
+    additionalPoint: 1200,
 
     score: 1635
 
@@ -3033,22 +2933,8 @@ function generateResultImage() {
 
 
   ctx.fillText(
-    "PPCC",
-    columns.ppcc,
-    tableY + 49
-  );
-
-
-  ctx.fillText(
-    "TANK",
-    columns.tank,
-    tableY + 49
-  );
-
-
-  ctx.fillText(
-    "DPS",
-    columns.dps,
+    "ADDITIONAL",
+    columns.additionalPoint,
     tableY + 49
   );
 
@@ -3208,25 +3094,9 @@ function generateResultImage() {
 
 
       ctx.fillText(
-        achievements.ppcc ||
+        achievements.additionalPoint ||
           0,
-        columns.ppcc,
-        y + 55
-      );
-
-
-      ctx.fillText(
-        achievements.tank ||
-          0,
-        columns.tank,
-        y + 55
-      );
-
-
-      ctx.fillText(
-        achievements.dps ||
-          0,
-        columns.dps,
+        columns.additionalPoint,
         y + 55
       );
 
@@ -3293,7 +3163,7 @@ function generateResultImage() {
 
 
   ctx.fillText(
-    "NoName",
+    "YEGK NoName",
     width - 70,
     footerY + 43
   );
@@ -3364,9 +3234,7 @@ function updatePermissionUI() {
     "mvpPoints",
     "quadraPoints",
     "pentaPoints",
-    "ppccPoints",
-    "tankPoints",
-    "dpsPoints"
+    "additionalPointPoints"
   ].forEach(
     id => {
 
