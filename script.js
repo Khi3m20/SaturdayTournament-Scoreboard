@@ -898,6 +898,124 @@ const Database = {
     }
 
 
+    await this.cleanupHistory();
+
+
+    return true;
+
+  },
+
+
+  async cleanupHistory() {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "tournament_history"
+        )
+        .select("id")
+        .order(
+          "archived_at",
+          {
+            ascending: false
+          }
+        )
+        .range(
+          10,
+          999
+        );
+
+
+    if (error) {
+
+      showDatabaseError(
+        "Failed to clean old tournament history.",
+        error
+      );
+
+      return false;
+
+    }
+
+
+    const oldIds =
+      (data || [])
+        .map(
+          row => row.id
+        );
+
+
+    if (!oldIds.length) {
+
+      return true;
+
+    }
+
+
+    const {
+      error: deleteError
+    } =
+      await supabaseClient
+        .from(
+          "tournament_history"
+        )
+        .delete()
+        .in(
+          "id",
+          oldIds
+        );
+
+
+    if (deleteError) {
+
+      showDatabaseError(
+        "Failed to delete old tournament history.",
+        deleteError
+      );
+
+      return false;
+
+    }
+
+
+    return true;
+
+  },
+
+
+  async deleteHistoryItem(
+    id
+  ) {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from(
+          "tournament_history"
+        )
+        .delete()
+        .eq(
+          "id",
+          id
+        );
+
+
+    if (error) {
+
+      showDatabaseError(
+        "Failed to delete tournament history.",
+        error
+      );
+
+      return false;
+
+    }
+
+
     return true;
 
   }
@@ -2645,6 +2763,26 @@ function renderHistory() {
 
                 </span>
 
+
+                ${
+                  isAdmin
+                    ? `
+
+                      <button
+                        type="button"
+                        onclick="
+                          deleteHistoryItem(
+                            ${tournamentData.id}
+                          )
+                        "
+                      >
+                        DELETE
+                      </button>
+
+                    `
+                    : ""
+                }
+
               </div>
 
             </div>
@@ -2654,6 +2792,66 @@ function renderHistory() {
         }
       )
       .join("");
+
+}
+
+
+/* =========================================================
+   DELETE HISTORY
+   ========================================================= */
+
+async function deleteHistoryItem(
+  id
+) {
+
+  if (!isAdmin) return;
+
+
+  const historyItem =
+    history.find(
+      item =>
+        item.id === id
+    );
+
+
+  if (!historyItem) return;
+
+
+  const confirmed =
+    confirm(
+      `Delete Tournament ${historyItem.tournamentNumber} history?`
+    );
+
+
+  if (!confirmed) return;
+
+
+  const success =
+    await Database.deleteHistoryItem(
+      id
+    );
+
+
+  if (!success) {
+
+    return;
+
+  }
+
+
+  history =
+    history.filter(
+      item =>
+        item.id !== id
+    );
+
+
+  renderEverything();
+
+
+  alert(
+    `Tournament ${historyItem.tournamentNumber} history deleted.`
+  );
 
 }
 
