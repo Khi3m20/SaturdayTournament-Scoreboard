@@ -3,849 +3,349 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>SOT Scoreboard</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
+<header class="site-header">
+  <div class="header-content">
 
-  <header class="site-header">
-
-    <div class="header-content">
-
-      <div class="brand">
-
-        <h1>SOT SCOREBOARD</h1>
-
-        <span>
-          SATURDAY OPEN TOURNAMENT
-        </span>
-
-      </div>
-
-
-      <div class="auth-area">
-
-        <span id="authStatus">
-          VIEWER
-        </span>
-
-        <button
-          id="loginBtn"
-          type="button"
-        >
-          ADMIN LOGIN
-        </button>
-
-        <button
-          id="logoutBtn"
-          type="button"
-          style="display:none;"
-        >
-          LOGOUT
-        </button>
-
-      </div>
-
+    <div class="brand">
+      <h1>SOT SCOREBOARD</h1>
+      <span>SATURDAY OPEN TOURNAMENT</span>
     </div>
 
-  </header>
+    <div class="auth-area">
+      <span id="authStatus">VIEWER</span>
 
-
-  <!-- =====================================================
-       ADMIN LOGIN
-       ===================================================== -->
-
-  <section
-    id="loginPanel"
-    class="login-panel"
-    style="display:none;"
-  >
-
-    <div class="panel-inner">
-
-      <h2>
+      <button id="loginBtn" type="button">
         ADMIN LOGIN
-      </h2>
-
-
-      <form id="loginForm">
-
-        <input
-          id="loginUsername"
-          type="text"
-          placeholder="Username"
-          autocomplete="username"
-          required
-        >
-
-        <input
-          id="loginPassword"
-          type="password"
-          placeholder="Password"
-          autocomplete="current-password"
-          required
-        >
-
-        <button
-          type="submit"
-        >
-          LOGIN
-        </button>
-
-      </form>
-
-
-      <p
-        id="loginMessage"
-        style="display:none;"
-      ></p>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       MAIN CONTENT
-       ===================================================== -->
-
-  <main class="main-content">
-
-
-    <!-- ===================================================
-         STATS
-         =================================================== -->
-
-    <section class="stats-grid">
-
-      <div class="stat-card">
-
-        <span>
-          PLAYERS
-        </span>
-
-        <strong id="totalPlayers">
-          0
-        </strong>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <span>
-          TOP SOT SCORE
-        </span>
-
-        <strong id="topScore">
-          0
-        </strong>
-
-      </div>
-
-
-      <div class="stat-card">
-
-        <span>
-          SOT LEADER
-        </span>
-
-        <strong id="leaderName">
-          —
-        </strong>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         ADMIN CONTROLS
-         =================================================== -->
-
-    <section
-      id="adminControls"
-      class="admin-controls"
-      style="display:none;"
-    >
-
-
-      <!-- SCORING SETTINGS -->
-
-      <div class="control-panel">
-
-        <h2>
-          SCORING SETTINGS
-        </h2>
-
-
-        <div class="scoring-grid">
-
-
-          <label>
-
-            WIN
-
-            <input
-              id="winPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-          <label>
-
-            MVP
-
-            <input
-              id="mvpPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-          <label>
-
-            QUADRA
-
-            <input
-              id="quadraPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-          <label>
-
-            PENTA
-
-            <input
-              id="pentaPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-          <label>
-
-            PPCC ×5
-
-            <input
-              id="ppccPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-          <label>
-
-            TANK 100%
-
-            <input
-              id="tankPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-          <label>
-
-            DPS 100%
-
-            <input
-              id="dpsPoints"
-              type="number"
-              min="0"
-              step="1"
-            >
-
-          </label>
-
-
-        </div>
-
-
-        <button
-          id="applyScoring"
-          type="button"
-        >
-          UPDATE SCORING
-        </button>
-
-      </div>
-
-
-
-      <!-- LIVE MATCH -->
-
-      <div class="control-panel">
-
-        <h2>
-          LIVE CONTROL
-        </h2>
-
-
-        <div class="match-control">
-
-          <button
-            type="button"
-            onclick="changeMatch(-1)"
-          >
-            −
-          </button>
-
-
-          <input
-            id="currentMatch"
-            type="number"
-            min="1"
-            value="1"
-          >
-
-
-          <button
-            type="button"
-            onclick="changeMatch(1)"
-          >
-            +
-          </button>
-
-        </div>
-
-
-        <div
-          id="adminLiveMatchDisplay"
-          class="live-match-display"
-        >
-          LIVE — MATCH 1
-        </div>
-
-      </div>
-
-
-
-      <!-- LEADERBOARD CONTROL -->
-
-      <div class="control-panel">
-
-        <h2>
-          LEADERBOARD CONTROL
-        </h2>
-
-
-        <p class="control-description">
-          Recalculate all player scores and update the current leaderboard.
-        </p>
-
-
-        <button
-          id="updateLeaderboardBtn"
-          type="button"
-        >
-          UPDATE LEADERBOARD
-        </button>
-
-      </div>
-
-
-
-      <!-- TOURNAMENT CONTROL -->
-
-      <div class="control-panel">
-
-        <h2>
-          TOURNAMENT CONTROL
-        </h2>
-
-
-        <p class="control-description">
-          Archive the current tournament and start a new one.
-        </p>
-
-
-        <button
-          id="newTournamentBtn"
-          type="button"
-        >
-          NEW TOURNAMENT
-        </button>
-
-      </div>
-
-
-
-      <!-- RESULT IMAGE -->
-
-      <div class="control-panel result-control">
-
-        <h2>
-          TOURNAMENT RESULT
-        </h2>
-
-
-        <p class="control-description">
-          Generate a final result image from the current leaderboard.
-        </p>
-
-
-        <button
-          id="generateResultBtn"
-          type="button"
-        >
-          GENERATE RESULT IMAGE
-        </button>
-
-
-        <div
-          id="resultPreview"
-          style="display:none;"
-        >
-
-          <h3>
-            RESULT PREVIEW
-          </h3>
-
-
-          <img
-            id="resultImage"
-            src=""
-            alt="Tournament result"
-          >
-
-        </div>
-
-      </div>
-
-
-    </section>
-
-
-
-    <!-- ===================================================
-         LIVE STATUS
-         =================================================== -->
-
-    <section class="status-section">
-
-      <div
-        id="viewerLiveMatchDisplay"
-        class="live-match-display"
-      >
-        LIVE — MATCH 1
-      </div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         SEARCH
-         =================================================== -->
-
-    <section class="search-section">
-
-      <input
-        id="search"
-        type="search"
-        placeholder="Search player..."
-        autocomplete="off"
-      >
-
-    </section>
-
-
-
-    <!-- ===================================================
-         TOP 5
-         =================================================== -->
-
-    <section
-      id="topFive"
-      class="top-five"
-    >
-
-      <div class="top-five-header">
-
-        <div>
-
-          <h2>
-            TOP 5 PLAYERS
-          </h2>
-
-          <span>
-            Highest SOT scores
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div
-        id="topFiveList"
-        class="top-five-list"
-      ></div>
-
-    </section>
-
-
-
-    <!-- ===================================================
-         LEADERBOARD
-         =================================================== -->
-
-    <section class="leaderboard-section">
-
-      <div class="section-heading">
-
-        <div>
-
-          <h2>
-            LEADERBOARD
-          </h2>
-
-          <span>
-            Saturday Open Tournament
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="table-wrapper">
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>
-                RANK
-              </th>
-
-              <th>
-                PLAYER
-              </th>
-
-              <th>
-                WIN
-              </th>
-
-              <th>
-                MVP
-              </th>
-
-              <th>
-                QUADRA
-              </th>
-
-              <th>
-                PENTA
-              </th>
-
-              <th>
-                PPCC ×5
-              </th>
-
-              <th>
-                TANK 100%
-              </th>
-
-              <th>
-                DPS 100%
-              </th>
-
-              <th>
-                SCORE
-              </th>
-
-              <th>
-                ACTION
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody id="leaderboard">
-          </tbody>
-
-        </table>
-
-      </div>
-
-
-      <div
-        id="emptyState"
-        class="empty-state"
-        style="display:none;"
-      >
-
-        <h3>
-          NO PLAYERS YET
-        </h3>
-
-        <p>
-          Players will appear here once they are added.
-        </p>
-
-      </div>
-
-
-
-      <!-- =================================================
-           ADD PLAYER
-           MOVED HERE — DIRECTLY BELOW LEADERBOARD
-           ================================================= -->
-
-      <div
-        id="addPlayerPanel"
-        class="control-panel"
-        style="display:none;"
-      >
-
-        <h2>
-          ADD PLAYER
-        </h2>
-
-
-        <form id="playerForm">
-
-          <input
-            id="playerName"
-            type="text"
-            placeholder="Player name"
-            maxlength="40"
-            required
-          >
-
-
-          <button
-            type="submit"
-          >
-            ADD PLAYER
-          </button>
-
-        </form>
-
-      </div>
-
-
-
-      <!-- =================================================
-           QUICK ADD PLAYER BUTTON
-           ================================================= -->
+      </button>
 
       <button
-        id="addPlayerShortcutBtn"
+        id="logoutBtn"
         type="button"
         style="display:none;"
       >
-        + ADD PLAYER
+        LOGOUT
+      </button>
+    </div>
+
+  </div>
+</header>
+
+
+<section
+  id="loginPanel"
+  class="login-panel"
+  style="display:none;"
+>
+  <div class="panel-inner">
+
+    <h2>ADMIN LOGIN</h2>
+
+    <form id="loginForm">
+
+      <input
+        id="loginUsername"
+        type="text"
+        placeholder="Username"
+        autocomplete="username"
+        required
+      >
+
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button type="submit">
+        LOGIN
       </button>
 
-    </section>
+    </form>
+
+    <p
+      id="loginMessage"
+      style="display:none;"
+    ></p>
+
+  </div>
+</section>
+
+
+<main class="main-content">
+
+
+<section class="stats-grid">
 
+  <div class="stat-card">
+    <span>PLAYERS</span>
+    <strong id="totalPlayers">0</strong>
+  </div>
+
+  <div class="stat-card">
+    <span>TOP SOT SCORE</span>
+    <strong id="topScore">0</strong>
+  </div>
+
+  <div class="stat-card">
+    <span>SOT LEADER</span>
+    <strong id="leaderName">—</strong>
+  </div>
+
+</section>
+
+
+<section
+  id="adminControls"
+  class="admin-controls"
+  style="display:none;"
+>
+
+
+  <div class="control-panel">
+
+    <h2>SCORING SETTINGS</h2>
+
+    <div class="scoring-grid">
+
+      <label>
+        WIN
+        <input
+          id="winPoints"
+          type="number"
+          min="0"
+          step="1"
+        >
+      </label>
 
+      <label>
+        MVP
+        <input
+          id="mvpPoints"
+          type="number"
+          min="0"
+          step="1"
+        >
+      </label>
 
-    <!-- ===================================================
-         TOURNAMENT HISTORY
-         =================================================== -->
+      <label>
+        QUADRA
+        <input
+          id="quadraPoints"
+          type="number"
+          min="0"
+          step="1"
+        >
+      </label>
 
-    <section class="rules-section">
+      <label>
+        PENTA
+        <input
+          id="pentaPoints"
+          type="number"
+          min="0"
+          step="1"
+        >
+      </label>
 
-      <div class="section-heading">
+      <label>
+        ADDITIONAL POINT
+        <input
+          id="additionalPointPoints"
+          type="number"
+          min="0"
+          step="1"
+        >
+      </label>
 
-        <div>
+    </div>
 
-          <h2>
-            TOURNAMENT HISTORY
-          </h2>
+    <button
+      id="applyScoring"
+      type="button"
+    >
+      UPDATE SCORING
+    </button>
 
-          <span>
-            Previous Saturday tournaments
-          </span>
+  </div>
 
-        </div>
 
-      </div>
+  <div class="control-panel">
 
+    <h2>LIVE CONTROL</h2>
 
-      <div
-        id="historyList"
-        class="history-list"
-      ></div>
+    <div class="match-control">
 
-    </section>
+      <button
+        type="button"
+        onclick="changeMatch(-1)"
+      >
+        −
+      </button>
 
+      <input
+        id="currentMatch"
+        type="number"
+        min="1"
+        value="1"
+      >
 
+      <button
+        type="button"
+        onclick="changeMatch(1)"
+      >
+        +
+      </button>
 
-    <!-- ===================================================
-         SCORING RULES
-         =================================================== -->
+    </div>
 
-    <section class="rules-section">
+    <div
+      id="adminLiveMatchDisplay"
+      class="live-match-display"
+    >
+      LIVE — MATCH 1
+    </div>
 
-      <div class="section-heading">
+  </div>
 
-        <div>
 
-          <h2>
-            SCORING RULES
-          </h2>
+  <div class="control-panel">
 
-          <span>
-            SOT scoring system
-          </span>
+    <h2>LEADERBOARD CONTROL</h2>
 
-        </div>
+    <p class="control-description">
+      Recalculate all player scores and update the current leaderboard.
+    </p>
 
-      </div>
+    <button
+      id="updateLeaderboardBtn"
+      type="button"
+    >
+      UPDATE LEADERBOARD
+    </button>
 
+  </div>
 
-      <div class="rules-grid">
 
+  <div class="control-panel">
 
-        <div class="rule-card">
+    <h2>TOURNAMENT CONTROL</h2>
 
-          <strong>
-            WIN
-          </strong>
+    <p class="control-description">
+      Archive the current tournament and start a new one.
+    </p>
 
-          <span>
-            Points awarded for each win.
-          </span>
+    <button
+      id="newTournamentBtn"
+      type="button"
+    >
+      NEW TOURNAMENT
+    </button>
 
-        </div>
+  </div>
 
 
-        <div class="rule-card">
+  <div class="control-panel result-control">
 
-          <strong>
-            MVP
-          </strong>
+    <h2>TOURNAMENT RESULT</h2>
 
-          <span>
-            Points awarded for each MVP.
-          </span>
+    <p class="control-description">
+      Generate a final result image from the current leaderboard.
+    </p>
 
-        </div>
+    <button
+      id="generateResultBtn"
+      type="button"
+    >
+      GENERATE RESULT IMAGE
+    </button>
 
+    <div
+      id="resultPreview"
+      style="display:none;"
+    >
 
-        <div class="rule-card">
+      <h3>RESULT PREVIEW</h3>
 
-          <strong>
-            QUADRA
-          </strong>
+      <img
+        id="resultImage"
+        src=""
+        alt="Tournament result"
+      >
 
-          <span>
-            Points awarded for each Quadra Kill.
-          </span>
+    </div>
 
-        </div>
+  </div>
 
 
-        <div class="rule-card">
+</section>
 
-          <strong>
-            PENTA
-          </strong>
 
-          <span>
-            Points awarded for each Penta Kill.
-          </span>
+<section class="status-section">
 
-        </div>
+  <div
+    id="viewerLiveMatchDisplay"
+    class="live-match-display"
+  >
+    LIVE — MATCH 1
+  </div>
 
+</section>
 
-        <div class="rule-card">
 
-          <strong>
-            PPCC ×5
-          </strong>
+<section class="search-section">
 
-          <span>
-            Perfect Crowd Control achievement.
-          </span>
+  <input
+    id="search"
+    type="search"
+    placeholder="Search player..."
+    autocomplete="off"
+  >
 
-        </div>
+</section>
 
 
-        <div class="rule-card">
+<section
+  id="topFive"
+  class="top-five"
+>
 
-          <strong>
-            TANK 100%
-          </strong>
-
-          <span>
-            Perfect Teamfight Tank achievement.
-          </span>
-
-        </div>
-
-
-        <div class="rule-card">
-
-          <strong>
-            DPS 100%
-          </strong>
-
-          <span>
-            Perfect Teamfight DPS achievement.
-          </span>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-  </main>
-
-
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-  <footer class="site-footer">
+  <div class="top-five-header">
 
     <div>
 
-      <strong>
-        SOT SCOREBOARD
-      </strong>
+      <h2>TOP 5 PLAYERS</h2>
+
+      <span>
+        Highest SOT scores
+      </span>
+
+    </div>
+
+  </div>
+
+  <div
+    id="topFiveList"
+    class="top-five-list"
+  ></div>
+
+</section>
+
+
+<section class="leaderboard-section">
+
+  <div class="section-heading">
+
+    <div>
+
+      <h2>LEADERBOARD</h2>
 
       <span>
         Saturday Open Tournament
@@ -853,15 +353,226 @@
 
     </div>
 
-  </footer>
+  </div>
 
 
+  <div class="table-wrapper">
 
-  <!-- =====================================================
-       JAVASCRIPT
-       ===================================================== -->
+    <table>
 
-  <script src="script.js"></script>
+      <thead>
+
+        <tr>
+
+          <th>RANK</th>
+
+          <th>PLAYER</th>
+
+          <th>WIN</th>
+
+          <th>MVP</th>
+
+          <th>QUADRA</th>
+
+          <th>PENTA</th>
+
+          <th>ADDITIONAL POINT</th>
+
+          <th>SCORE</th>
+
+          <th>ACTION</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="leaderboard"></tbody>
+
+    </table>
+
+  </div>
+
+
+  <div
+    id="emptyState"
+    class="empty-state"
+    style="display:none;"
+  >
+
+    <h3>
+      NO PLAYERS YET
+    </h3>
+
+    <p>
+      Players will appear here once they are added.
+    </p>
+
+  </div>
+
+
+  <div
+    id="addPlayerPanel"
+    class="control-panel"
+    style="display:none;"
+  >
+
+    <h2>ADD PLAYER</h2>
+
+    <form id="playerForm">
+
+      <input
+        id="playerName"
+        type="text"
+        placeholder="Player name"
+        maxlength="40"
+        required
+      >
+
+      <button type="submit">
+        ADD PLAYER
+      </button>
+
+    </form>
+
+  </div>
+
+
+  <button
+    id="addPlayerShortcutBtn"
+    type="button"
+    style="display:none;"
+  >
+    + ADD PLAYER
+  </button>
+
+</section>
+
+
+<section class="rules-section">
+
+  <div class="section-heading">
+
+    <div>
+
+      <h2>TOURNAMENT HISTORY</h2>
+
+      <span>
+        Previous Saturday tournaments
+      </span>
+
+    </div>
+
+  </div>
+
+  <div
+    id="historyList"
+    class="history-list"
+  ></div>
+
+</section>
+
+
+<section class="rules-section">
+
+  <div class="section-heading">
+
+    <div>
+
+      <h2>SCORING RULES</h2>
+
+      <span>
+        SOT scoring system
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="rules-grid">
+
+    <div class="rule-card">
+
+      <strong>WIN</strong>
+
+      <span>
+        Points awarded for each win.
+      </span>
+
+    </div>
+
+
+    <div class="rule-card">
+
+      <strong>MVP</strong>
+
+      <span>
+        Points awarded for each MVP.
+      </span>
+
+    </div>
+
+
+    <div class="rule-card">
+
+      <strong>QUADRA</strong>
+
+      <span>
+        Points awarded for each Quadra Kill.
+      </span>
+
+    </div>
+
+
+    <div class="rule-card">
+
+      <strong>PENTA</strong>
+
+      <span>
+        Points awarded for each Penta Kill.
+      </span>
+
+    </div>
+
+
+    <div class="rule-card">
+
+      <strong>ADDITIONAL POINT</strong>
+
+      <span>
+        Custom bonus or penalty points.
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div>
+
+    <strong>SOT SCOREBOARD</strong>
+
+    <span>
+      Saturday Open Tournament
+    </span>
+
+    <small>
+      © YEGK NoName
+    </small>
+
+  </div>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 </html>
